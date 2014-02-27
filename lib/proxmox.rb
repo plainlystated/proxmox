@@ -31,6 +31,11 @@ module Proxmox
       @auth_params = create_ticket
     end
 
+    def post(path, args = {})
+      args_str = args.to_a.map { |v| v.join '=' }.join '&'
+      http_action_post(path, args_str)
+    end
+
     # Get task status
     #
     # :call-seq:
@@ -329,6 +334,7 @@ module Proxmox
       if (response.code == 200) then
         JSON.parse(response.body)['data']
       else
+        puts "ERR: #{response}"
         "NOK: error code = " + response.code.to_s
       end
     end
